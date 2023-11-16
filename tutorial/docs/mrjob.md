@@ -31,9 +31,10 @@ mrjob script wordcount_mrjob.py:
 
 ``` py title="mrjob_wc.py"
 from mrjob.job import MRJob
+import re
 
 WORD_REGEX = re.compile(r"[\w]+")
-class MRWordCount(MrJob):
+class MRWordCount(MRJob):
 
     def mapper(self, _, line):
         for word in WORD_REGEX.findall(line):
@@ -43,9 +44,11 @@ class MRWordCount(MrJob):
     def reducer(self, word, counts):
         yield(word, sum(counts))
 
-    
+
 if __name__ == '__main__':
     MRWordCount.run()
+
+
 
 ```
 
@@ -55,10 +58,10 @@ To run it localy:
 $ python wordcount_mrjob.py 'pg2701.txt'
 ```
 
-We can execute the mrjob locally:  ```$ python mrjob.py input.txt```. The mrjob writes output to stout. 
-We can also pass the multiple files ```$ python mrjob.py input.txt input2.txt input3.txt```
+We can execute the mrjob locally:  ```$ python mrjob.py input.txt```. The mrjob writes output to stout. To save results to file we can run  ```$ python mrjob.py input.txt > out.txt```
+We can also pass the multiple files ```$ python mrjob.py input.txt input2.txt input3.txt```. 
 
-Finally, with the ```-runner/-r``` option, we can define how the job executes. If the job executes in the Hadoop cluster  ```bash $ python mrjob.py -r hadoop input.txt``` If we run it on the EMR cluster  ```$ python mrjob.py -r emr s3://input-bucket/input.txt ```.
+Finally, with the ```-runner/-r``` option, we can define how the job executes. If the job executes in the Hadoop cluster  ```$ python mrjob.py -r hadoop input.txt``` If we run it on the EMR cluster  ```$ python mrjob.py -r emr s3://input-bucket/input.txt ```.
 
 ### Chaining map-reduce
 
@@ -90,11 +93,11 @@ class MRMaxFreq(MRJob):
 
 
     # keys: None, values: (word, word_count)
-    def mapper_post(self, word, word_count):
+    def mapper_2(self, word, word_count):
         yield None, (word, word_count)
 
     # sort list of (word, word_count) by word_count
-    def reducer_post(self, _, word_count_pairs):
+    def reducer_2(self, _, word_count_pairs):
         yield max(word_count_pairs, key=lambda p: p[1],)
 
 if __name__ == "__main__":
@@ -107,7 +110,7 @@ We run it as previous, additionaly the output can be  redirected to the file "ma
 ``` sh
 $ python word_freq_mrjob.py 'pg20701.txt' > 'max_freq_word.txt'
 $ cat 'max_freq_word.txt'
-"the" 14715
+"the" 14620
 ```
 
 ### Passing arguments to mrjob

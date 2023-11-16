@@ -83,8 +83,8 @@ $$
 - $R_a$ is previous rating, 
  
 - $S_a$ is actual outcome of the match. The actual outcome of one player may be victory $S_a=1$ or loss $S_a=0$ so $0\leq S_a \leq 1$. 
-- $E_a$ is expected outcome of the match while. To map the expectation of the outcome from 0 to 1, we can use logistic curve, so $E_a = Q_a / (Q_a+Q_b)$, where $Q_a = 10^{R_a/c}$, $Q_b = 10^{R_a/c}$. The factor c can be 400.
-- Parameter K is scaling factor, which determines how much influence each match can have, and in this example can be set on 1000 .
+- $E_a$ is expected outcome of the match while. To map the expectation of the outcome from 0 to 1, we can use logistic curve, so $E_a = Q_a / (Q_a+Q_b)$, where $Q_a = 10^{R_a/c}$, $Q_b = 10^{R_b/c}$. The factor c can be 400.
+- Parameter K is scaling factor, which determines how much influence each match can have, and in this example can be set on $100$ .
 
 The mapper:
 
@@ -137,32 +137,32 @@ def elo_acc(acc, nxt):
     return acc
 
 if __name__=="__main__":
+    # return dictionary
     xs = reduce(elo_acc, stdin, {})
-    for player, rtg in list(xs.items())[:10]:
+    topN = (sorted(xs.items(), key=lambda item: item[1], reverse=True))[:20]
+    
+    for player, rtg in topN:
         print(rtg, player)
+ 
+
 ```
 We can always check the output of our scripts in local: 
 
 ``` sh
-cat mini_data.csv python mapper.py | sort | reducer.py
+cat tennis_wta-master/wta_matches_* | python elo_map.py | sort | python elo_reduce.py 
+
 ```
 after running script we'll get result similar to this:
 
 ``` json
-"Julia Helbet": 1360,
-"Glenny Cepeda": 1400,
-"Hana Sromova": 1075,
-"Sophie Ferguson": 1130,
-"Anne Mall": 1360,
-"Nuria Llagostera Vives": 1120,
-"Maria Vento Kabchi": 1050,
-"Roxana Abdurakhmonova": 1380,
-"Zarina Diyas": 1405,
-"Stephanie Vogt": 1430,
-"Soumia Islami": 1390,
-"Pei Ling Tong": 1380,
-"Shikha Uberoi": 1160,
-"Amani Khalifa": 1410,
+3075 Zina Garrison
+2930 Victoria Azarenka
+2845 Zarina Diyas
+2765 Zuzana Ondraskova
+2745 Yung Jan Chan
+2745 Yvonne Vermaak
+2710 Tatiana Golovin
+2700 Yurika Sema
 ...
 ```
 To run it on Hadoop cluster: 

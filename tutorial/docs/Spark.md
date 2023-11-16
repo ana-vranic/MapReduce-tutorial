@@ -33,8 +33,7 @@ the output will appear in folder output/0001 and output/0002, depending on the n
 
 The ```sc = SparkContext(appName='SparkWordCount')``` creates a context object, which tells Spark how to access the cluster. 
 The ```input_file = sc.textFile('pg2701.txt')``` loads data. 
-The third line performs multiple input data transformations, similar to before. Everything is automatically parallelized and runs across multiple nodes. 
-
+The third line performs multiple input data transformations, similar to before. Everything is automatically parallelized and runs across multiple nodes. This file is not loaded; the variable lines are just a pointer to the external source. The second statement transforms the base RDD using the map() function to calculate the number of characters in each line. The variable line_lengths is not immediately computed due to the laziness of transformations. Finally, the reduce() method is called an action. At this point, Spark divides the computations into tasks on separate machines. Each machine runs the map and reduction on its local data, returning only the results to the driver program. With the lambda function, we can easily pass the function that has to be run on the cluster. 
 
 **Resilient Distributed Datasets (RDDs)**
 
@@ -57,15 +56,6 @@ Another way to create Rdd is from a file using ```textFile()``` method, as we di
 
 **RDD Operations**
 
-Usually we create first RDDs from some data, then apply some dataset tranformation 
-
-```python
-lines = sc.textFile('data.txt')
-line_lengths = lines.map(lambda x: len(x))
-document_length = line_lengths.reduce(lambda x,y: x+y)
-```
-The first statement creates an RDD from the external file data.txt. This file is not loaded; the variable lines are just a pointer to the external source. The second statement transforms the base RDD using the map() function to calculate the number of characters in each line. The variable line_lengths is not immediately computed due to the laziness of transformations. Finally, the reduce() method is called an action. At this point, Spark divides the computations into tasks on separate machines. Each machine runs the map and reduction on its local data, returning only the results to the driver program. With the lambda function, we can easily pass the function that has to be run on the cluster. 
-
 Here are listed some commonly used operations that can be applied to the RDDs: 
 
 - map() map. function returns a RDD by applying function to each element of the source RDD
@@ -76,71 +66,65 @@ data = [1, 2, 3, 4, 5, 6]
 rdd = sc.parallelize(data)
 map_result = rdd.map(lambda x: x * 2)
 map_result.collect()
-[2, 4, 6, 8, 10, 12]
 ```
+[2, 4, 6, 8, 10, 12]
 
 - flatMap() returns a flattened version of results. 
 
 ```python
 data = [1, 2, 3, 4]
->>> rdd = sc.parallelize(data)
->>> map = rdd.map(lambda x: [x, pow(x,2)])
->>> map.collect()
+rdd = sc.parallelize(data)
+rdd.map(lambda x: [x, pow(x,2)]).collect()
+
+```
 [[1, 1], [2, 4], [3, 9], [4, 16]]``
 
-```
-
 ```python
-rdd = sc.parallelize()
-flat_map = rdd.flatMap(lambda x: [x, pow(x,2)])
-flat_map.collect()
-[1, 1, 2, 4, 3, 9, 4, 16]
+rdd = sc.parallelize([1, 2, 3, 4])
+rdd.flatMap(lambda x: [x, pow(x,2)]).collect()
 ```
+[1, 1, 2, 4, 3, 9, 4, 16]
+
 
 - .groupBy()
 
 ``` python
-xs = sc.parallelize(["apple", "banana", "cantaloupe"])
-data = xs.groupBy(lambda x: x[0]).collect()
-sorted([(x, sorted(y)) for (x, y) in data])
+rdd = sc.parallelize(["apple", "banana", "cantaloupe"])
+xs = rdd.groupBy(lambda x: x[0]).collect()
+print(sorted([(x, sorted(y)) for (x, y) in xs]))
 ```
 [('a', ['apple']), ('b', ['banana']), ('c', ['cantaloupe'])]
 
 - .groupByKey() python
   
 ```
-xs = sc.parallelize([("pet", "dog"), ("pet", "cat"),("farm", "horse"), ("farm", "cow")])
-data = xs.groupByKey().collect()
+rdd = sc.parallelize([("pet", "dog"), ("pet", "cat"),("farm", "horse"), ("farm", "cow")])
+xs = rdd.groupByKey().collect()
 
-[(x, list(y)) for (x, y) in data]
+[(x, list(y)) for (x, y) in xs]
 ```
 [('farm', ['horse', 'cow']), ('pet', ['dog', 'cat'])]
 
 - filter(func) returns a new RDD contains only elements that function return as true
 
 ```python
-data = [1, 2, 3, 4, 5, 6]
-rdd = sc.parallelize(data)
-filter_result = rdd.filter(lambda x: x % 2 == 0)
-filter_result.collect()
+rdd = sc.parallelize([1, 2, 3, 4, 5, 6])
+rdd.filter(lambda x: x % 2 == 0).collect()
 ```
 [2, 4, 6]
 
 - distinct. this returns unique elements in the list
 
 ```
-data = [1, 2, 3, 2, 4, 1]
-rdd = sc.parallelize(data)
-distinct_result = rdd.distinct()
-distinct_result.collect()
+rdd = sc.parallelize([1, 2, 3, 2, 4, 1])
+rdd.distinct().collect()
 [4, 1, 2, 3]
 ```
 
 - reduce
 
 ```py
-data = [1, 2, 3]
-rdd = sc.parallelize(data)
+rdd = sc.parallelize([1, 2, 3])
 print(rdd.reduce(lambda a, b: a+b))
 ```
 6
@@ -148,8 +132,7 @@ print(rdd.reduce(lambda a, b: a+b))
 - reduceByKey
 
 ```py
-data = [(1, 2), (1, 5), (2, 4)]
-rdd = sc.parallelize(data)
+rdd = sc.parallelize([(1, 2), (1, 5), (2, 4)])
 rdd.reduceByKey(lambda a, b: a+b).collect()
 ```
 [(1, 7), (2, 4)]
@@ -162,7 +145,7 @@ Page rank can be calculated as:
 
 $r_i = (1-d) + d(\sum_{j=1}^{N} I_{ij} \frac{r_j}{n_j} )$
 
-The PageRank of a node is (1-dumping factor) + every node that points to node $i$ will contribute with page rank of node j/number of outgoing links.
+The PageRank of a node is (1-dumping factor) + every node that points to node $i$ will contribute with page rank of node j/number of outgoing links. The PageRank theory holds that an imaginary surfer who is randomly clicking on links will eventually stop clicking. The probability, at any step, that the person will continue following links is a damping factor d. The probability that they instead jump to any random page is 1 - d. 
 
 **PageRank in pyspark**
 
@@ -182,7 +165,7 @@ We will perform PageRank on the WTA matches dataset used before. Before we apply
 
 ```python
 import networkx as nx
-mini_mathes = [('player1', 'player2'), 
+mini_matches = [('player1', 'player2'), 
               ('player2', 'player3'),
               ('player3', 'player4'),
               ('player2', 'player1'),
@@ -190,16 +173,19 @@ mini_mathes = [('player1', 'player2'),
 
 
 G = nx.DiGraph()
-G.add_edges_from(mini_mathes)
+G.add_edges_from(mini_matches)
 nx.draw_networkx(G)
 ```
 ![Players in graph representation](graph1.png)
 
 ```python
 import pyspark
-xs = sc.parallelize(mini_mathes)
+xs = sc.parallelize(mini_matches)
 links = xs.groupByKey().mapValues(list)
 links.collect()
+```
+
+```
 -----------------------
 [('player1', ['player2']),
  ('player2', ['player3', 'player1']),
@@ -232,11 +218,11 @@ We are going to compute contributions of each node as
 ```py
 from operator import add
 
-def computeContribs(node_urls_rank):
-    _, (urls, rank) = node_urls_rank
-    nb_urls = len(urls)
-    for url in urls:
-        yield url, rank / nb_urls
+def computeContribs(node_links_rank):
+    _, (links, rank) = node_links_rank
+    nb_links = len(links)
+    for outnode in links:
+        yield outnode, rank / nb_links
 
 for iteration in range(10):
     contribs = links.join(ranks).flatMap(computeContribs)
@@ -251,22 +237,14 @@ for iteration in range(10):
 Let us bring everything together:
 
 ```python 
-from operator import add
-
-def computeContribs(node_urls_rank):
-    _, (urls, rank) = node_urls_rank
-    nb_urls = len(urls)
-    for url in urls:
-        yield url, rank / nb_urls
 
 def get_page_rank(xs, beta=0.85, niter=10):
 
-    
     links = xs.groupByKey().mapValues(list)
     Nodes = (xs.keys() + xs.values()).distinct()
     ranks = Nodes.map(lambda x: (x, 100))
 
-    for iteration in range(10):
+    for iteration in range(niter):
         contribs = links.join(ranks).flatMap(computeContribs)
         contribs = links.fullOuterJoin(contribs).mapValues(lambda x : x[1] or 0.0)
         ranks = contribs.reduceByKey(add)
@@ -277,9 +255,9 @@ xs = sc.parallelize(mini_matches)
 page_ranks = get_page_rank(xs)
 r = sorted(page_ranks.collect())
 
-page_rank = [x[1]*1000 for x in r]
+page_rank = [x[1]*100 for x in r]
 G = nx.DiGraph()
-G.add_edges_from(mini_mathes)
+G.add_edges_from(mini_matches)
 nx.draw_networkx(G, node_size=page_rank, node_color=page_rank)
 ```
 ![Image title](graph2.png)
@@ -294,7 +272,7 @@ def get_loser_winner(match):
     ms = match.split(',')
     return (ms[18], ms[10])
 
-match_data = sc.textFile("data/tennis_wta-master/wta_matches*") 
+match_data = sc.textFile("tennis_wta-master/wta_matches*") 
 xs = match_data.map(get_loser_winner) #rdd
 
 page_rank = get_page_rank(xs, beta=0.85, niter=10)
@@ -321,43 +299,209 @@ When we execute it we'll get the most influential tennis players according to Pa
 
 Apache Spark offers a machine learning API called MLlib, where we can find a different kinds of machine learning algorithms, such as mllib.classification, mllib.linalg, mllib.recommendation, mllib.regression, mllib.clustering.  
 
-Another usefull 
+Another usefull module is pyspark.sql which can be used to create **DataFrame**, execute SQL over tables. 
+
+To create SparkSession we can use:
 
 ```py
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.appName("mlwithspark").getOrCreate()
-df = spark.read.csv('iris_dataset.csv', inferSchema=True, header=True)
 ```
 
-```{.text .out}
-150 5
+Then load iris dataset into table:
+
+```py
+df = spark.read.csv('iris.csv', inferSchema=True, header=True)
+df.show()
+```
+```
+|sepal_length|sepal_width|petal_length|petal_width|species|
++------------+-----------+------------+-----------+-------+
+|         5.1|        3.5|         1.4|        0.2| setosa|
+|         4.9|        3.0|         1.4|        0.2| setosa|
+|         4.7|        3.2|         1.3|        0.2| setosa|
+|         4.6|        3.1|         1.5|        0.2| setosa|
+|         5.0|        3.6|         1.4|        0.2| setosa|
+|         5.4|        3.9|         1.7|        0.4| setosa|
+|         4.6|        3.4|         1.4|        0.3| setosa|
+|         5.0|        3.4|         1.5|        0.2| setosa|
+|         4.4|        2.9|         1.4|        0.2| setosa|
+|         4.9|        3.1|         1.5|        0.1| setosa|
+|         5.4|        3.7|         1.5|        0.2| setosa|
+|         4.8|        3.4|         1.6|        0.2| setosa|
+|         4.8|        3.0|         1.4|        0.1| setosa|
+|         4.3|        3.0|         1.1|        0.1| setosa|
+|         5.8|        4.0|         1.2|        0.2| setosa|
+|         5.7|        4.4|         1.5|        0.4| setosa|
+|         5.4|        3.9|         1.3|        0.4| setosa|
+|         5.1|        3.5|         1.4|        0.3| setosa|
+|         5.7|        3.8|         1.7|        0.3| setosa|
+|         5.1|        3.8|         1.5|        0.3| setosa|
++------------+-----------+------------+-----------+-------+
+only showing top 20 rows
+```
+**Dataset analasys**
+```py
+print(df.count(), len(df.columns))
+```
+``150 5``
+
+```
+df.columns
+```
+```['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']```
+
+```
+df.printSchema()
+```
+```
+root
+ |-- sepal_length: double (nullable = true)
+ |-- sepal_width: double (nullable = true)
+ |-- petal_length: double (nullable = true)
+ |-- petal_width: double (nullable = true)
+ |-- species: string (nullable = true)
 ```
 
 ```py
-print(df.count(), len(df.columns))
+df.select('species').distinct().show()
+```
+```
++----------+
+|   species|
++----------+
+| virginica|
+|versicolor|
+|    setosa|
++----------+
+```
 
-df.columns
-
-df.printSchema()
-
-df.orderBy('species').show(10, False)
-
-df.select('species').distinct().count()
-
+```py
 df.groupBy('species').count().orderBy('count').show()
+```
+```
++----------+-----+
+|   species|count|
++----------+-----+
+| virginica|   50|
+|versicolor|   50|
+|    setosa|   50|
++----------+-----+
+```
 
+```
 df.withColumn("petal_area", (df['petal_length']*df['petal_width'])).show()
 
+```
+
+```
++------------+-----------+------------+-----------+-------+-------------------+
+|sepal_length|sepal_width|petal_length|petal_width|species|         petal_area|
++------------+-----------+------------+-----------+-------+-------------------+
+|         5.1|        3.5|         1.4|        0.2| setosa|0.27999999999999997|
+|         4.9|        3.0|         1.4|        0.2| setosa|0.27999999999999997|
+|         4.7|        3.2|         1.3|        0.2| setosa|               0.26|
+|         4.6|        3.1|         1.5|        0.2| setosa|0.30000000000000004|
+|         5.0|        3.6|         1.4|        0.2| setosa|0.27999999999999997|
+|         5.4|        3.9|         1.7|        0.4| setosa|               0.68|
+|         4.6|        3.4|         1.4|        0.3| setosa|               0.42|
+|         5.0|        3.4|         1.5|        0.2| setosa|0.30000000000000004|
+|         4.4|        2.9|         1.4|        0.2| setosa|0.27999999999999997|
+|         4.9|        3.1|         1.5|        0.1| setosa|0.15000000000000002|
+|         5.4|        3.7|         1.5|        0.2| setosa|0.30000000000000004|
+|         4.8|        3.4|         1.6|        0.2| setosa|0.32000000000000006|
+|         4.8|        3.0|         1.4|        0.1| setosa|0.13999999999999999|
+|         4.3|        3.0|         1.1|        0.1| setosa|0.11000000000000001|
+|         5.8|        4.0|         1.2|        0.2| setosa|               0.24|
+|         5.7|        4.4|         1.5|        0.4| setosa| 0.6000000000000001|
+|         5.4|        3.9|         1.3|        0.4| setosa|               0.52|
+|         5.1|        3.5|         1.4|        0.3| setosa|               0.42|
+|         5.7|        3.8|         1.7|        0.3| setosa|               0.51|
+|         5.1|        3.8|         1.5|        0.3| setosa|0.44999999999999996|
++------------+-----------+------------+-----------+-------+-------------------+
+only showing top 20 rows
+```
+
+```py
 df.filter(df['species']=='setosa').show()
 
+```
+
+```
++------------+-----------+------------+-----------+-------+
+|sepal_length|sepal_width|petal_length|petal_width|species|
++------------+-----------+------------+-----------+-------+
+|         5.1|        3.5|         1.4|        0.2| setosa|
+|         4.9|        3.0|         1.4|        0.2| setosa|
+|         4.7|        3.2|         1.3|        0.2| setosa|
+|         4.6|        3.1|         1.5|        0.2| setosa|
+|         5.0|        3.6|         1.4|        0.2| setosa|
+|         5.4|        3.9|         1.7|        0.4| setosa|
+|         4.6|        3.4|         1.4|        0.3| setosa|
+|         5.0|        3.4|         1.5|        0.2| setosa|
+|         4.4|        2.9|         1.4|        0.2| setosa|
+|         4.9|        3.1|         1.5|        0.1| setosa|
+|         5.4|        3.7|         1.5|        0.2| setosa|
+|         4.8|        3.4|         1.6|        0.2| setosa|
+|         4.8|        3.0|         1.4|        0.1| setosa|
+|         4.3|        3.0|         1.1|        0.1| setosa|
+|         5.8|        4.0|         1.2|        0.2| setosa|
+|         5.7|        4.4|         1.5|        0.4| setosa|
+|         5.4|        3.9|         1.3|        0.4| setosa|
+|         5.1|        3.5|         1.4|        0.3| setosa|
+|         5.7|        3.8|         1.7|        0.3| setosa|
+|         5.1|        3.8|         1.5|        0.3| setosa|
++------------+-----------+------------+-----------+-------+
+only showing top 20 rows
+```
+
+```
 df.groupBy('species').sum().show()
 
+```
+
+```
++------------+-----------+------------+-----------+-------+
+|sepal_length|sepal_width|petal_length|petal_width|species|
++------------+-----------+------------+-----------+-------+
+|         5.1|        3.5|         1.4|        0.2| setosa|
+|         4.9|        3.0|         1.4|        0.2| setosa|
+|         4.7|        3.2|         1.3|        0.2| setosa|
+|         4.6|        3.1|         1.5|        0.2| setosa|
+|         5.0|        3.6|         1.4|        0.2| setosa|
+|         5.4|        3.9|         1.7|        0.4| setosa|
+|         4.6|        3.4|         1.4|        0.3| setosa|
+|         5.0|        3.4|         1.5|        0.2| setosa|
+|         4.4|        2.9|         1.4|        0.2| setosa|
+|         4.9|        3.1|         1.5|        0.1| setosa|
+|         5.4|        3.7|         1.5|        0.2| setosa|
+|         4.8|        3.4|         1.6|        0.2| setosa|
+|         4.8|        3.0|         1.4|        0.1| setosa|
+|         4.3|        3.0|         1.1|        0.1| setosa|
+|         5.8|        4.0|         1.2|        0.2| setosa|
+|         5.7|        4.4|         1.5|        0.4| setosa|
+|         5.4|        3.9|         1.3|        0.4| setosa|
+|         5.1|        3.5|         1.4|        0.3| setosa|
+|         5.7|        3.8|         1.7|        0.3| setosa|
+|         5.1|        3.8|         1.5|        0.3| setosa|
++------------+-----------+------------+-----------+-------+
+only showing top 20 rows
+```
+```
 df.groupBy('species').max().show()
-
-df.groupBy('species').min().show()
 ```
 
 ```
++----------+-----------------+----------------+-----------------+----------------+
+|   species|max(sepal_length)|max(sepal_width)|max(petal_length)|max(petal_width)|
++----------+-----------------+----------------+-----------------+----------------+
+| virginica|              7.9|             3.8|              6.9|             2.5|
+|versicolor|              7.0|             3.4|              5.1|             1.8|
+|    setosa|              5.8|             4.4|              1.9|             0.6|
++----------+-----------------+----------------+-----------------+----------------+
+```
+**Clustering**
+```py
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.clustering import KMeans
@@ -381,17 +525,67 @@ for k in range(2,10):
 
 ```
 
-
 ```
+With K=2
+Within Set Sum of Squared Errors = 152.36870647733915
+With K=3
+Within Set Sum of Squared Errors = 78.94084142614598
+With K=4
+Within Set Sum of Squared Errors = 57.345409315718136
+With K=5
+Within Set Sum of Squared Errors = 49.74079031410786
+With K=6
+Within Set Sum of Squared Errors = 38.930963049671746
+With K=7
+Within Set Sum of Squared Errors = 38.38031204013376
+With K=8
+Within Set Sum of Squared Errors = 33.44114349376113
+With K=9
+Within Set Sum of Squared Errors = 28.87989715264096
+```
+
+
+```py
 import matplotlib.pyplot as plt
 cluster_number = range(2, 10)
 plt.plot(cluster_number, errors, 'o-')
 
+```
+![Image title](error.png)
+
+
+```py
 kmeans = KMeans(featuresCol='features',k=3,)
 model = kmeans.fit(final_data)
-model.transform(final_data).groupBy('prediction').count().show()
+predictions = model.transform(final_data).groupBy('prediction')
+```
 
-predictions.groupBy('species','prediction').count().show()
+```
++------------+-----------+------------+-----------+-------+-----------------+----------+
+|sepal_length|sepal_width|petal_length|petal_width|species|         features|prediction|
++------------+-----------+------------+-----------+-------+-----------------+----------+
+|         5.1|        3.5|         1.4|        0.2| setosa|[5.1,3.5,1.4,0.2]|         2|
+|         4.9|        3.0|         1.4|        0.2| setosa|[4.9,3.0,1.4,0.2]|         2|
+|         4.7|        3.2|         1.3|        0.2| setosa|[4.7,3.2,1.3,0.2]|         2|
+|         4.6|        3.1|         1.5|        0.2| setosa|[4.6,3.1,1.5,0.2]|         2|
+|         5.0|        3.6|         1.4|        0.2| setosa|[5.0,3.6,1.4,0.2]|         2|
+|         5.4|        3.9|         1.7|        0.4| setosa|[5.4,3.9,1.7,0.4]|         2|
+|         4.6|        3.4|         1.4|        0.3| setosa|[4.6,3.4,1.4,0.3]|         2|
+|         5.0|        3.4|         1.5|        0.2| setosa|[5.0,3.4,1.5,0.2]|         2|
+|         4.4|        2.9|         1.4|        0.2| setosa|[4.4,2.9,1.4,0.2]|         2|
+|         4.9|        3.1|         1.5|        0.1| setosa|[4.9,3.1,1.5,0.1]|         2|
+|         5.4|        3.7|         1.5|        0.2| setosa|[5.4,3.7,1.5,0.2]|         2|
+|         4.8|        3.4|         1.6|        0.2| setosa|[4.8,3.4,1.6,0.2]|         2|
+|         4.8|        3.0|         1.4|        0.1| setosa|[4.8,3.0,1.4,0.1]|         2|
+|         4.3|        3.0|         1.1|        0.1| setosa|[4.3,3.0,1.1,0.1]|         2|
+|         5.8|        4.0|         1.2|        0.2| setosa|[5.8,4.0,1.2,0.2]|         2|
+|         5.7|        4.4|         1.5|        0.4| setosa|[5.7,4.4,1.5,0.4]|         2|
+|         5.4|        3.9|         1.3|        0.4| setosa|[5.4,3.9,1.3,0.4]|         2|
+|         5.1|        3.5|         1.4|        0.3| setosa|[5.1,3.5,1.4,0.3]|         2|
+|         5.7|        3.8|         1.7|        0.3| setosa|[5.7,3.8,1.7,0.3]|         2|
+|         5.1|        3.8|         1.5|        0.3| setosa|[5.1,3.8,1.5,0.3]|         2|
++------------+-----------+------------+-----------+-------+-----------------+----------+
+only showing top 20 rows
 ```
 
 

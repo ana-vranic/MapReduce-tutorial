@@ -42,7 +42,6 @@ def splitter(line):
     line = WORD_REGEX.findall(line)
     return map(str.lower, line)
 
-def 
     
 sums = {}
 try:
@@ -63,7 +62,7 @@ else:
 ```
 Ater running the program we will get:
 
-```max: the = 14715```
+```max: the = 14620```
 
 A program written like this runs only on one processor, and we expect that the time necessary to process the whole text is proportional to the size of the text. Also, as the size of the dictionary grows, the performance degrades. When the size of the dictionary reaches the size of RAM or even swap space, the program will be stopped.  
 
