@@ -5,7 +5,7 @@ nav:
      - Hadoop: MapReduce.md
      - mrjob: mrjob.md
      - Spark: Spark.md
-     - Tutorial prerequisits: tutorial.md
+     #- Tutorial prerequisits: tutorial.md
      #- PageRank in pysprak: Spark2.md
      #- MachineLearning in pyspark: Spark3.md
 theme:
@@ -27,6 +27,8 @@ markdown_extensions:
 - pymdownx.superfences
 - pymdownx.arithmatex:
       generic: true
+- admonition
+- pymdownx.details
   
 
 extra_javascript:

@@ -1,16 +1,16 @@
 # mrjob
 
- mrjob is Python MapReduce library that wraps Hadoop streaming, and allows us to write the MapReduce programs in more pythonic manner. With mrjob it is possible to write multistep jobs. mrjob programs can be tested localy, they can be run on Hadoop cluster and can be run in the Amazon cloud using Amazon Elastic MapReduce (EMR).
+  mrjob is a Python MapReduce library that wraps Hadoop streaming and allows us to write the MapReduce programs in a more Pythonic manner. With mrjob, it is possible to write multistep jobs. mrjob programs can be tested locally, run on the Hadoop cluster, and run in the Amazon cloud using Amazon Elastic MapReduce (EMR).
 
 - instalation ```$ pip install mrjob ```
 
-In mrjob MapReduce function is defined as class MRClass which contains the methods which define the MapReduce job:
+In mrjob, the MapReduce function is defined as class MRClass, which contains the methods that define the MapReduce job:
 
  - the mapper() defines the mapper. It takes (key, values) as arguments and yields tuppels (output_key, output_valies)
 
- - the combiner() defines the process that runs after mapper and before reducer. It recieves all data from mappper and the output of maper is sent to reducer. The combiner’s input is a key, which was yielded by the mapper, and a value, which is a generator that yields all values yielded by one mapper that corresponds to the key. The combiner yields tuples of (output_key, output_value) as output.
+ - the combiner() defines the process that runs after the mapper and before the reducer. It receives all data from the mapper, and the output of the paper is sent to the reducer. The combiner’s input is the key, yielded by the mapper, and a value, which is a generator that yields all values yielded by one mapper that corresponds to the key. The combiner yields tuples of (output_key, output_value) as output.
  
- - the reducer() defines the reducer for the MapReduce job. It takes key and an iterator of values as arguments and yields tuples of (outup_key, output_value)
+ - the reducer() defines the reducer for the MapReduce job. It takes a key and an iterator of values as arguments and yields tuples of (outup_key, output_value)
 
 - The final component is, which enables the execution of mrjob. 
 
@@ -20,10 +20,9 @@ if __name__ == '__main__':
     MRClass.run()
 ```
 
-### word count example with mrjob
+### Word count example with mrjob
 
-We will perform word count on Moby Dick book downloaded from ProjectGutenberg
-
+We will perform a word count on Moby Dick book downloaded from project Gutenberg
 ``` sh
 wget "https://gutenberg.org/cache/epub/2701/pg2701.txt"
 ```
@@ -56,14 +55,14 @@ To run it localy:
 $ python wordcount_mrjob.py 'pg2701.txt'
 ```
 
-We can execute the mrjob localy:  ```$ python mrjob.py input.txt```. The mrjob writes output to stout. 
+We can execute the mrjob locally:  ```$ python mrjob.py input.txt```. The mrjob writes output to stout. 
 We can also pass the multiple files ```$ python mrjob.py input.txt input2.txt input3.txt```
 
-Finally, with ```-runner/-r``` option we can define how job executes. If job executes in Hadoop cluster  ```bash $ python mrjob.py -r hadoop input.txt``` If we run it on th EMR cluster  ```$ python mrjob.py -r emr s3://input-bucket/input.txt ```.
+Finally, with the ```-runner/-r``` option, we can define how the job executes. If the job executes in the Hadoop cluster  ```bash $ python mrjob.py -r hadoop input.txt``` If we run it on the EMR cluster  ```$ python mrjob.py -r emr s3://input-bucket/input.txt ```.
 
-### chaining map-reduce
+### Chaining map-reduce
 
-With mrjob we can easy chain several map-reduce functions. For example if we need to calculate the word with maximum frequency in the dataset. To do that we need to override the steps() method. The code will have mapper and reducer same as in previous task. Then, secound mapper uses the output of reducer, which map all (word, count) pairs to same key None The shuffle step of map-reduce will  collect them all into one list coresponding to key None. Then reducer_post will sort the list of (word, word_count) pairs by word_count and yield the word with maximum frequency. 
+With mrjob, we can easily chain several map-reduce functions. For example, if we need to calculate the word with maximum frequency in the dataset. To do that, we need to override the steps() method. The code will have a mapper and reducer, the same as in the previous task. Then, the second mapper uses the reducer's output, which maps all (word, count) pairs to the same key, None. The shuffle step of map-reduce will collect them all into one list corresponding to the key None. Then reducer_post will sort the list of (word, word_count) pairs by word_count and yield the word with maximum frequency. 
 
 ``` py title="mrjob_wf.py"
 from mrjob.job import MRJob
@@ -111,41 +110,9 @@ $ cat 'max_freq_word.txt'
 "the" 14715
 ```
 
-### Creating helper data structures
-
-When we count the number of words, instead of yielding (word, 1) in mapper, we can initialize the mapper_init datastructure where we will store results, and mapper_final() which is used to post-proces data after main function. These methods can be used with all methods: mapper_init(), mapper_final(), reducer_init(), reducer_final(), and combiner_init(), combiner_final(). 
-
-The modified word count example is
-
-``` py title="mrjob_wc_1.py"
-from collections import defaultdict
-from mrjob.job import MRJob
-import re
-
-word_regex = re.compile(r"[\w]+")
-
-class MRWordCount(MRJob):
-
-    def mapper_init(self):
-        self.words_dict = defaultdict(int)
-
-    def mapper(self, _, line):
-        for w in word_regex.findall(line):
-            self.words_dict[word.lower()] += 1
-
-    def mapper_final(self):
-        for word, val in self.words_dict.items():
-            yield word, val
-
-    def reducer(self, word, counts):
-        yield word, sum(counts)
-
-```
-Here, mapper_init() function create dictinary, the mapper populates the dictionary, while the mapper_final() preprocess the dictionary and yield (word, val) pairs. As mrjob runs in several processes we need reducer, which will combine partial counts made by each process. 
-
 ### Passing arguments to mrjob
 
-Getting Serena Williams sisters rivaly with MRJob
+Getting Williams sisters rivaly with MRJob. Here we will select matches when 'Serena Williams' and 'Venus Williams' played against eachother, and calculate how many times each sister won depending on the surface. 
 
 ``` py title="mrjob_williams.py"
 from mrjob.job import MRJob
