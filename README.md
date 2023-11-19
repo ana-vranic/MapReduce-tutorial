@@ -1,2 +1,2 @@
 # Big Data analysis with Map-Reduce 
-tutorial for Data Science conference in Belgrade 2023.  
+tutorial for the DSC Europe conference, from 20-24th November 2023 in Belgrade  
