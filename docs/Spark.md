@@ -1,4 +1,4 @@
-## PySpark
+# Spark
 
 Apache Spark is another popular cluster computing framework for big data processing. Contrary to Hadoop, it takes advantage of high-RAM computing machines, which are now available. Spark processes data in memory on the distributed network instead of storing data in the filesystem. This can improve the processing time. Spark's advantages are natively supporting programming languages like Scala, Java, Python, and R. Spark has a direct Python interface - **pyspark**, which uses the same analogy of map and reduce. It can be used interactively from the command shell or jupyter notebook. Spark can query SQL databases directly, and DataFrame API is similar to pandas. 
 
@@ -8,6 +8,8 @@ Installation of pyspark requires installed Java. From there, we can install pysp
 pip install pyspark
 ```
 Before we introduce the main features of the pyspark, let's see how we can write the simplest problem word count.
+
+## PySpark
 
 **Word Count in PySpark**
 
@@ -33,7 +35,7 @@ the output will appear in folder output/0001 and output/0002, depending on the n
 
 The ```sc = SparkContext(appName='SparkWordCount')``` creates a context object, which tells Spark how to access the cluster. 
 The ```input_file = sc.textFile('pg2701.txt')``` loads data. 
-The third line performs multiple input data transformations, similar to before. Everything is automatically parallelized and runs across multiple nodes. This file is not loaded; the variable lines are just a pointer to the external source. The second statement transforms the base RDD using the map() function to calculate the number of characters in each line. The variable line_lengths is not immediately computed due to the laziness of transformations. Finally, the reduce() method is called an action. At this point, Spark divides the computations into tasks on separate machines. Each machine runs the map and reduction on its local data, returning only the results to the driver program. With the lambda function, we can easily pass the function that has to be run on the cluster. 
+The third line performs multiple input data transformations, similar to before. Everything is automatically parallelized and runs across multiple nodes. The variable counts is not immidiately computed due to laziness of transformations. When we call function reduce(), which is action, Spark devides the computations into tasks on separate machines. Each machine runs the map and reduction on its local data, returning only the results to the driver program.
 
 **Resilient Distributed Datasets (RDDs)**
 
@@ -44,6 +46,10 @@ data = [1, 2, 3, 4, 5, 6]
 rdd = sc.parallelize(data)
 rdd.glom().collect()
 ```
+```
+[1, 2, 3, 4, 5, 6]
+```
+
 RDD.glom() returns a list of elements within each partition, while RDD.collect() collect all elements to the driver node. 
 To specify the number of partitions:
 ```
@@ -145,7 +151,8 @@ Page rank can be calculated as:
 
 $r_i = (1-d) + d(\sum_{j=1}^{N} I_{ij} \frac{r_j}{n_j} )$
 
-The PageRank of a node is (1-dumping factor) + every node that points to node $i$ will contribute with page rank of node j/number of outgoing links. The PageRank theory holds that an imaginary surfer who is randomly clicking on links will eventually stop clicking. The probability, at any step, that the person will continue following links is a damping factor d. The probability that they instead jump to any random page is 1 - d. 
+The PageRank of a node is (1-dumping factor) + every node that points to node $i$ will contribute with page rank of node j/number of outgoing links. The PageRank has analogy with random walker over internet. The probability that walker will follow link is proportionall to the damping factor $d$, while probability that walker jumps to any random page is $1-d$. 
+
 
 **PageRank in pyspark**
 
@@ -176,8 +183,9 @@ G = nx.DiGraph()
 G.add_edges_from(mini_matches)
 nx.draw_networkx(G)
 ```
-![Players in graph representation](graph1.png)
+![Players in graph representation](graph1.png){ width="300" }
 
+First, we are going to create Rdd object from links, and we will group them by source node. For each player we will get the list of matches in which player lost. 
 ```python
 import pyspark
 xs = sc.parallelize(mini_matches)
@@ -192,7 +200,7 @@ links.collect()
  ('player3', ['player4']),
  ('player4', ['player2'])]
 ```
-
+Then we initialize the PageRank od each player. 
 ```python
 Nodes = (xs.keys() + xs.values()).distinct()
 ranks = Nodes.map(lambda x: (x, 100))
@@ -201,7 +209,7 @@ sorted(ranks.collect())
 [('player1', 1.0), ('player2', 1.0), ('player3', 1.0), ('player4', 1.0)]
 
 ```
-
+Here we join lists of lost games and PageRank into tupple. As links and ranks have same keys, we can use that by calling ```join()``` function. 
 ```python 
 links.join(ranks).collect()
 -------------------------------------
@@ -213,7 +221,7 @@ links.join(ranks).collect()
  ('player1', (['player2'], 1.0))]
 ```
 
-We are going to compute contributions of each node as 
+We are going to compute contributions of each node, and finally we will run several iterations of PageRank algorithm.  
 
 ```py
 from operator import add
@@ -234,7 +242,7 @@ for iteration in range(10):
 
 ```
 
-Let us bring everything together:
+Let us bring everything together into function, where we can controll the dumping factor $\b$ and the number of iterations. Finally we can plot our mini  graph, such that nodes with higher PageRank differ in size and colour.  
 
 ```python 
 
@@ -260,17 +268,17 @@ G = nx.DiGraph()
 G.add_edges_from(mini_matches)
 nx.draw_networkx(G, node_size=page_rank, node_color=page_rank)
 ```
-![Image title](graph2.png)
+![Image title](graph2.png){ width="300" }
 
 
 **PageRank for tennis dataset**
 
-Now, we can compute the page rank of any graph. We'll preprocess the WTA matches dataset:
+Now, we can compute the page rank of any graph. We'll need to preprocess the WTA matches dataset:
 
 ```python 
 def get_loser_winner(match):
     ms = match.split(',')
-    return (ms[18], ms[10])
+    return (ms[18], ms[10]) #loser, winner
 
 match_data = sc.textFile("tennis_wta-master/wta_matches*") 
 xs = match_data.map(get_loser_winner) #rdd
@@ -297,11 +305,11 @@ When we execute it we'll get the most influential tennis players according to Pa
 ```
 ## Machine Learning in PySpark
 
-Apache Spark offers a machine learning API called MLlib, where we can find a different kinds of machine learning algorithms, such as mllib.classification, mllib.linalg, mllib.recommendation, mllib.regression, mllib.clustering.  
+Apache Spark offers a machine learning API called MLlib, where we can find a different kinds of machine learning algorithms, such as mllib.classification, mllib.linalg, mllib.recommendation, mllib.regression, mllib.clustering.  Another usefull module is pyspark.sql which can be used to create **DataFrame** object. 
 
-Another usefull module is pyspark.sql which can be used to create **DataFrame**, execute SQL over tables. 
+Lets explore K-means clustering with MLlib library. K-means is unsupervised machine learning algorithm that partitions a dataset into K clusters. To demonstrate how K-means works we will use "iris.csv" dataset. 
 
-To create SparkSession we can use:
+First we need to create SparkSession, and for that  we can use:
 
 ```py
 from pyspark.sql import SparkSession
@@ -389,7 +397,9 @@ df.groupBy('species').count().orderBy('count').show()
 +----------+-----+
 ```
 
-```
+If we want to add new column to DataFrame: 
+
+```py
 df.withColumn("petal_area", (df['petal_length']*df['petal_width'])).show()
 
 ```
@@ -455,7 +465,7 @@ df.filter(df['species']=='setosa').show()
 only showing top 20 rows
 ```
 
-```
+```py
 df.groupBy('species').sum().show()
 
 ```
@@ -487,7 +497,7 @@ df.groupBy('species').sum().show()
 +------------+-----------+------------+-----------+-------+
 only showing top 20 rows
 ```
-```
+```py
 df.groupBy('species').max().show()
 ```
 
@@ -501,94 +511,143 @@ df.groupBy('species').max().show()
 +----------+-----------------+----------------+-----------------+----------------+
 ```
 **Clustering**
-```py
-from pyspark.ml.linalg import Vectors
-from pyspark.ml.feature import VectorAssembler
-from pyspark.ml.clustering import KMeans
-input_cols=['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
 
-vec_assembler = VectorAssembler(inputCols=input_cols, outputCol='features')
-final_data = vec_assembler.transform(df)
-from pyspark.ml.evaluation import ClusteringEvaluator
-
-evaluator = ClusteringEvaluator(predictionCol='species', featuresCol='features',metricName='silhouette', distanceMeasure='squaredEuclidean')
-
-errors=[]
-
-for k in range(2,10):
-    kmeans = KMeans(featuresCol='features',k=k)
-    model = kmeans.fit(final_data)
-    output = model.transform(final_data)
-    errors.append( model.summary.trainingCost)
-    print("With K={}".format(k))
-    print("Within Set Sum of Squared Errors = " + str(errors))
-
-```
-
-```
-With K=2
-Within Set Sum of Squared Errors = 152.36870647733915
-With K=3
-Within Set Sum of Squared Errors = 78.94084142614598
-With K=4
-Within Set Sum of Squared Errors = 57.345409315718136
-With K=5
-Within Set Sum of Squared Errors = 49.74079031410786
-With K=6
-Within Set Sum of Squared Errors = 38.930963049671746
-With K=7
-Within Set Sum of Squared Errors = 38.38031204013376
-With K=8
-Within Set Sum of Squared Errors = 33.44114349376113
-With K=9
-Within Set Sum of Squared Errors = 28.87989715264096
-```
-
+Before running the K-means algorithm, all features are merged into single column. Then we need to determine the optimal number of clusters (K). We can use elbow method, ploting the error over different values of K, and finding the elbow point. 
 
 ```py
-import matplotlib.pyplot as plt
-cluster_number = range(2, 10)
-plt.plot(cluster_number, errors, 'o-')
 
-```
-![Image title](error.png)
-
-
-```py
-kmeans = KMeans(featuresCol='features',k=3,)
-model = kmeans.fit(final_data)
-predictions = model.transform(final_data).groupBy('prediction')
+from pyspark.ml.feature import StringIndexer
+feature = StringIndexer(inputCol="species", outputCol="targetlabel")
+target = feature.fit(df).transform(df)
+target.show()
 ```
 
 ```
-+------------+-----------+------------+-----------+-------+-----------------+----------+
-|sepal_length|sepal_width|petal_length|petal_width|species|         features|prediction|
-+------------+-----------+------------+-----------+-------+-----------------+----------+
-|         5.1|        3.5|         1.4|        0.2| setosa|[5.1,3.5,1.4,0.2]|         2|
-|         4.9|        3.0|         1.4|        0.2| setosa|[4.9,3.0,1.4,0.2]|         2|
-|         4.7|        3.2|         1.3|        0.2| setosa|[4.7,3.2,1.3,0.2]|         2|
-|         4.6|        3.1|         1.5|        0.2| setosa|[4.6,3.1,1.5,0.2]|         2|
-|         5.0|        3.6|         1.4|        0.2| setosa|[5.0,3.6,1.4,0.2]|         2|
-|         5.4|        3.9|         1.7|        0.4| setosa|[5.4,3.9,1.7,0.4]|         2|
-|         4.6|        3.4|         1.4|        0.3| setosa|[4.6,3.4,1.4,0.3]|         2|
-|         5.0|        3.4|         1.5|        0.2| setosa|[5.0,3.4,1.5,0.2]|         2|
-|         4.4|        2.9|         1.4|        0.2| setosa|[4.4,2.9,1.4,0.2]|         2|
-|         4.9|        3.1|         1.5|        0.1| setosa|[4.9,3.1,1.5,0.1]|         2|
-|         5.4|        3.7|         1.5|        0.2| setosa|[5.4,3.7,1.5,0.2]|         2|
-|         4.8|        3.4|         1.6|        0.2| setosa|[4.8,3.4,1.6,0.2]|         2|
-|         4.8|        3.0|         1.4|        0.1| setosa|[4.8,3.0,1.4,0.1]|         2|
-|         4.3|        3.0|         1.1|        0.1| setosa|[4.3,3.0,1.1,0.1]|         2|
-|         5.8|        4.0|         1.2|        0.2| setosa|[5.8,4.0,1.2,0.2]|         2|
-|         5.7|        4.4|         1.5|        0.4| setosa|[5.7,4.4,1.5,0.4]|         2|
-|         5.4|        3.9|         1.3|        0.4| setosa|[5.4,3.9,1.3,0.4]|         2|
-|         5.1|        3.5|         1.4|        0.3| setosa|[5.1,3.5,1.4,0.3]|         2|
-|         5.7|        3.8|         1.7|        0.3| setosa|[5.7,3.8,1.7,0.3]|         2|
-|         5.1|        3.8|         1.5|        0.3| setosa|[5.1,3.8,1.5,0.3]|         2|
-+------------+-----------+------------+-----------+-------+-----------------+----------+
++------------+-----------+------------+-----------+-------+-----------+
+|sepal_length|sepal_width|petal_length|petal_width|species|targetlabel|
++------------+-----------+------------+-----------+-------+-----------+
+|         5.1|        3.5|         1.4|        0.2| setosa|        0.0|
+|         4.9|        3.0|         1.4|        0.2| setosa|        0.0|
+|         4.7|        3.2|         1.3|        0.2| setosa|        0.0|
+|         4.6|        3.1|         1.5|        0.2| setosa|        0.0|
+|         5.0|        3.6|         1.4|        0.2| setosa|        0.0|
+|         5.4|        3.9|         1.7|        0.4| setosa|        0.0|
+|         4.6|        3.4|         1.4|        0.3| setosa|        0.0|
+|         5.0|        3.4|         1.5|        0.2| setosa|        0.0|
+|         4.4|        2.9|         1.4|        0.2| setosa|        0.0|
+|         4.9|        3.1|         1.5|        0.1| setosa|        0.0|
+|         5.4|        3.7|         1.5|        0.2| setosa|        0.0|
+|         4.8|        3.4|         1.6|        0.2| setosa|        0.0|
+|         4.8|        3.0|         1.4|        0.1| setosa|        0.0|
+|         4.3|        3.0|         1.1|        0.1| setosa|        0.0|
+|         5.8|        4.0|         1.2|        0.2| setosa|        0.0|
+|         5.7|        4.4|         1.5|        0.4| setosa|        0.0|
+|         5.4|        3.9|         1.3|        0.4| setosa|        0.0|
+|         5.1|        3.5|         1.4|        0.3| setosa|        0.0|
+|         5.7|        3.8|         1.7|        0.3| setosa|        0.0|
+|         5.1|        3.8|         1.5|        0.3| setosa|        0.0|
++------------+-----------+------------+-----------+-------+-----------+
 only showing top 20 rows
 ```
 
+```py
+input_cols=['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+from pyspark.ml.feature import VectorAssembler
 
+vec_assembler = VectorAssembler(inputCols=input_cols, outputCol='features')
+final_data = vec_assembler.transform(target)
+final_data.show()
+```
 
+```
++------------+-----------+------------+-----------+-------+-----------+-----------------+
+|sepal_length|sepal_width|petal_length|petal_width|species|targetlabel|         features|
++------------+-----------+------------+-----------+-------+-----------+-----------------+
+|         5.1|        3.5|         1.4|        0.2| setosa|        0.0|[5.1,3.5,1.4,0.2]|
+|         4.9|        3.0|         1.4|        0.2| setosa|        0.0|[4.9,3.0,1.4,0.2]|
+|         4.7|        3.2|         1.3|        0.2| setosa|        0.0|[4.7,3.2,1.3,0.2]|
+|         4.6|        3.1|         1.5|        0.2| setosa|        0.0|[4.6,3.1,1.5,0.2]|
+|         5.0|        3.6|         1.4|        0.2| setosa|        0.0|[5.0,3.6,1.4,0.2]|
+|         5.4|        3.9|         1.7|        0.4| setosa|        0.0|[5.4,3.9,1.7,0.4]|
+|         4.6|        3.4|         1.4|        0.3| setosa|        0.0|[4.6,3.4,1.4,0.3]|
+|         5.0|        3.4|         1.5|        0.2| setosa|        0.0|[5.0,3.4,1.5,0.2]|
+|         4.4|        2.9|         1.4|        0.2| setosa|        0.0|[4.4,2.9,1.4,0.2]|
+|         4.9|        3.1|         1.5|        0.1| setosa|        0.0|[4.9,3.1,1.5,0.1]|
+|         5.4|        3.7|         1.5|        0.2| setosa|        0.0|[5.4,3.7,1.5,0.2]|
+|         4.8|        3.4|         1.6|        0.2| setosa|        0.0|[4.8,3.4,1.6,0.2]|
+|         4.8|        3.0|         1.4|        0.1| setosa|        0.0|[4.8,3.0,1.4,0.1]|
+|         4.3|        3.0|         1.1|        0.1| setosa|        0.0|[4.3,3.0,1.1,0.1]|
+|         5.8|        4.0|         1.2|        0.2| setosa|        0.0|[5.8,4.0,1.2,0.2]|
+|         5.7|        4.4|         1.5|        0.4| setosa|        0.0|[5.7,4.4,1.5,0.4]|
+|         5.4|        3.9|         1.3|        0.4| setosa|        0.0|[5.4,3.9,1.3,0.4]|
+|         5.1|        3.5|         1.4|        0.3| setosa|        0.0|[5.1,3.5,1.4,0.3]|
+|         5.7|        3.8|         1.7|        0.3| setosa|        0.0|[5.7,3.8,1.7,0.3]|
+|         5.1|        3.8|         1.5|        0.3| setosa|        0.0|[5.1,3.8,1.5,0.3]|
++------------+-----------+------------+-----------+-------+-----------+-----------------+
+only showing top 20 rows
+```
 
+```py
+from pyspark.ml.clustering import KMeans
+from pyspark.ml.evaluation import ClusteringEvaluator
+import matplotlib.pyplot as plt
+
+# Computing WSSSE for K values from 2 to 8
+errors =[]
+evaluator = ClusteringEvaluator(predictionCol='prediction', featuresCol='features', \
+                                metricName='silhouette', distanceMeasure='squaredEuclidean')
+
+for i in range(2,8):    
+    KMeans_mod = KMeans(featuresCol='features', k=i)  
+    KMeans_fit = KMeans_mod.fit(final_data)  
+    output = KMeans_fit.transform(final_data)   
+    score = evaluator.evaluate(output)   
+    errors.append(score)  
+    print("K=%s, error=%s"%(i, score))
+```
+
+```
+K=2, error=0.8501515983265806
+K=3, error=0.7342113066202725
+K=4, error=0.6093888373825749
+K=5, error=0.5933815144059972
+K=6, error=0.5524969270291149
+K=7, error=0.6233281829975698
+```
+
+```
+plt.plot(range(1, 7), errors)
+plt.xlabel('Number of Clusters (K)')
+plt.ylabel('Error')
+plt.title('Elbow Method for Optimal K')
+plt.grid()
+plt.show()
+
+```
+
+![Image title](error.png){ width="400" }
+
+Finally, we can run kmeans for 3 clusters and visualize the resulting clusters. 
+
+```py
+kmeans = KMeans(k=3, featuresCol="features", predictionCol="cluster")
+kmeans_model = kmeans.fit(final_data)
+clustered_data = kmeans_model.transform(final_data)
+```
+
+```py
+import pandas as pd
+# Converting to Pandas DataFrame
+clustered_data_pd = clustered_data.toPandas()
+
+# Visualizing the results
+plt.scatter(clustered_data_pd["sepal_length"], clustered_data_pd["sepal_width"], c=clustered_data_pd["cluster"], cmap='viridis')
+plt.xlabel("SepalLengthCm")
+plt.ylabel("SepalWidthCm")
+plt.title("K-means Clustering with PySpark MLlib")
+plt.colorbar().set_label("Cluster")
+plt.show()
+
+```
+![Image title](kmeans.png){ width="400" }
 

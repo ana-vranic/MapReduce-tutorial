@@ -1,0 +1,14 @@
+<article id="doc-cover">
+    {% if cover_logo is defined %}
+        <div class="wrapper upper">
+            <div class="logo" style="background-image: url({{ cover_logo | to_url }});"></div>
+        </div>
+    {% else %}
+        <div class="wrapper"></div>
+    {% endif %}
+    <div class="wrapper">
+        <h1>{{ cover_title | e }}</h1>
+        <h2>{{ cover_subtitle | e }}</h2>
+        <h2>{{ author }}</h2>
+    </div>
+</article>

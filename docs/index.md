@@ -8,28 +8,31 @@ In Data Science, we often deal with big amounts of data. In those cases, many st
 
     - map() applies the function to each element in the sequence and returns the resulting sequence. map() also returns the memory address of the returned map generator object and has to be called with a list() or through the loop. 
 
-    ``` 
-    >> ls = list(range(10))
-    >> list(map(lambda x: x**2, ls))
-    [1, 1, 4, 9, 16, 25, 36]
+    ```py 
+    ls = list(range(10))
+    list(map(lambda x: x**2, ls))
 
+    ```
+
+    ```
+      [1, 1, 4, 9, 16, 25, 36]
     ```
 
     - reduce() function returns a single value. It applies the function to the sequence elements from left to right. 
 
     ```
     from functools import reduce
-    >>> ls = list(range(1, 10, 2))
-    [1, 3, 5, 7, 9]
-    >>> reduce(lambda x, y: x*y, ls) #(1*3*5*7*9)
-    945
-
+    ls = list(range(1, 10, 2))
+    reduce(lambda x, y: x*y, ls) #(1*3*5*7*9)
+    ```
+    ```
+      945
     ```
 
 
-## Word Count
+## Word Count in python
 
-Counting the number of words in the documents is the simplest example when learning the MapReduce technique. In this tutorial, we will work on the [Moby Dick book](https://nyu-cds.github.io/python-bigdata/files/pg2701.txt). In python, we can use the following code:
+Counting the number of words in the document is the simplest example when learning the MapReduce technique. In this tutorial, we will work on the [Moby Dick book](https://nyu-cds.github.io/python-bigdata/files/pg2701.txt). In python, we can use the following code:
 
 ```py title="word_count.py"
 import re
@@ -66,7 +69,9 @@ Ater running the program we will get:
 
 A program written like this runs only on one processor, and we expect that the time necessary to process the whole text is proportional to the size of the text. Also, as the size of the dictionary grows, the performance degrades. When the size of the dictionary reaches the size of RAM or even swap space, the program will be stopped.  
 
-In the map-reduce approach, we can avoid memory issues we may encounter. With a larger dataset, where we can still use our local computers, we can use modified versions of map-reduce functions. When data becomes big, we need to process and store data in distributed frameworks like Hadoop Spark or online computing services like AWS or Azure, where we can use the same principles and patterns we will learn in this tutorial. 
+In the map-reduce approach, we can avoid memory issues we may encounter.  Those aproaches are scalable, and can be tested on the smaller datasets on local machine. When data becomes big, we'll need to process and store data in distributed frameworks like Hadoop or  Spark or online computing services like AWS or Azure, where we can use the same principles and patterns we will learn in this tutorial. 
+
+## Map-Reduce
 
 MapReduce consists of 3 steps:
 
@@ -74,14 +79,9 @@ MapReduce consists of 3 steps:
 - Shuffle step, which groups intermediate results with the same output key
 - Reducing step that processes groups of intermediate results with the same key
 
-![Image title](mrwc.png)
+<figure markdown>
+![Image title](mrwc.png){ width="500" }
+<figcaption> Figure credits:  <a href="https://nyu-cds.github.io/python-bigdata/02-mapreduce/">New York University</a> </figcaption>
+</figure>
 
 This approach works on data sets that consist of data records. The idea is to define the calculation in terms of two steps - a map step and a reduce step. The map operation is applied to every data record in the set and returns a list of key-value pairs. Those pairs are then collected, sorted by key, and passed into the reduce operation, which takes a key and a list of values associated with that key and then computes the final result for that key, returning it as a key-value pair.
-
-## The outline 
-
-To explore MapReduce further, this tutorial will cover MapReduce paradigm usage in different frameworks:
-
-- Hadoop cluster streaming for python
-- Python mrjob library
-- Python library pyspark for pythonic usage of Spark cluster

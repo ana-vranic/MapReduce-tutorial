@@ -1,0 +1,57 @@
+site_name: Map-Reduce tutorial
+
+nav:
+     
+     - Introduction: index.md
+     - Hadoop: MapReduce.md
+     - mrjob: mrjob.md
+     - Spark: Spark.md
+     - Used Datasets and packages: tutorial.md
+
+theme:
+  name: material
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+        custom_fences:
+          - name: mermaid
+            class: mermaid
+            format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.arithmatex:
+        generic: true
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - attr_list
+  
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+copyright: " " 
+plugins:
+  - with-pdf: 
+        custom_template_path: custom_pdf
+        author: Ana Vranic <br/>   Scientific Computing Laboratory, Institute of Physics Belgrade, Serbia, <br/>  Social Physics and Complexity Laboratory, LIP, Portugal
+        
+        cover_subtitle: DSC 2023, Belgrade 
+        #render_js: true
+        #headless_chrome_path: /snap/bin/chromium
+
+
+

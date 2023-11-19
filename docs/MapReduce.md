@@ -4,7 +4,7 @@ Apache Hadoop is an open-source implementation of a distributed MapReduce system
 
 Hadoop was developed in Java, and its primary use is through Java API; however, Hadoop also offers a “streaming” API, which is more general and it can work with map-reduce jobs written in any language which can read data from standard input and return data to standard output. In this tutorial, we will provide examples in Python. 
 
-### Python Streaming 
+## Python Streaming 
 
 If you prefer languages other than Java, Hadoop offers the streaming API. The term streaming here refers to how Hadoop uses standard input and output streams of your non-java mapper and reducer programs to pipe data between them. Relying on stdin and stdout enables easy integration with any other language.
 
@@ -64,7 +64,7 @@ $ mapred streaming  \
 ```
 The input and output parameters specify the locations for input and output data on the HDFS file system - Hierarchical distributed file system. Mapper and reducer parameters specify the mapper and reducer programs, respectively. The following parameters specify files on the local file system that will be uploaded to Hadoop and made available in the context of that job. Here, we define our python scripts to make them available for execution on the data nodes.
 
-### Calculating ELO ratings
+## Calculating ELO ratings
 
 We can download data from [repository](https://github.com/JeffSackmann/tennis_wta) 
 

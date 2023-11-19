@@ -1,6 +1,6 @@
 # mrjob
 
-  mrjob is a Python MapReduce library that wraps Hadoop streaming and allows us to write the MapReduce programs in a more Pythonic manner. With mrjob, it is possible to write multistep jobs. mrjob programs can be tested locally, run on the Hadoop cluster, and run in the Amazon cloud using Amazon Elastic MapReduce (EMR).
+  mrjob is a Python MapReduce library that wraps Hadoop streaming and allows us to write the MapReduce programs in a more Pythonic manner. With mrjob, it is possible to write multistep jobs. Programs can be tested locally, run on the Hadoop cluster, and run in the Amazon cloud using Amazon Elastic MapReduce (EMR).
 
 - instalation ```$ pip install mrjob ```
 
@@ -12,7 +12,7 @@ In mrjob, the MapReduce function is defined as class MRClass, which contains the
  
  - the reducer() defines the reducer for the MapReduce job. It takes a key and an iterator of values as arguments and yields tuples of (outup_key, output_value)
 
-- The final component is, which enables the execution of mrjob. 
+- The final component enables the execution of mrjob. 
 
 ``` py
 if __name__ == '__main__':
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     MRClass.run()
 ```
 
-### Word count example with mrjob
+## Word count example with mrjob
 
 We will perform a word count on Moby Dick book downloaded from project Gutenberg
 ``` sh
@@ -63,7 +63,7 @@ We can also pass the multiple files ```$ python mrjob.py input.txt input2.txt in
 
 Finally, with the ```-runner/-r``` option, we can define how the job executes. If the job executes in the Hadoop cluster  ```$ python mrjob.py -r hadoop input.txt``` If we run it on the EMR cluster  ```$ python mrjob.py -r emr s3://input-bucket/input.txt ```.
 
-### Chaining map-reduce
+## Chaining map-reduce
 
 With mrjob, we can easily chain several map-reduce functions. For example, if we need to calculate the word with maximum frequency in the dataset. To do that, we need to override the steps() method. The code will have a mapper and reducer, the same as in the previous task. Then, the second mapper uses the reducer's output, which maps all (word, count) pairs to the same key, None. The shuffle step of map-reduce will collect them all into one list corresponding to the key None. Then reducer_post will sort the list of (word, word_count) pairs by word_count and yield the word with maximum frequency. 
 
@@ -113,9 +113,9 @@ $ cat 'max_freq_word.txt'
 "the" 14620
 ```
 
-### Passing arguments to mrjob
+## Passing arguments to mrjob
 
-Getting Williams sisters rivaly with MRJob. Here we will select matches when 'Serena Williams' and 'Venus Williams' played against eachother, and calculate how many times each sister won depending on the surface. 
+In this example we will preprocess tennis dataset in order to check Williams sisters rivaly with MRJob. Here we will select matches when 'Serena Williams' and 'Venus Williams' played against eachother, and calculate how many times each sister won depending on the surface. 
 
 ``` py title="mrjob_williams.py"
 from mrjob.job import MRJob
@@ -147,7 +147,7 @@ if __name__ == "__main__":
 python mrjob_wiliams.py tennis_wta-master/wta_matches_*
 ```
 
-Instead of overcoding the script with 'Serena Williams' and Venus Williams we can pass arguments to mrjob using passargs option.  
+Instead of overcoding the script with 'Serena Williams' and Venus Williams we can pass arguments to mrjob using ```add_passthru_arg``` option, and we will have to define new function ```configure_args()``` which loads passed arguments.   
 
 ``` py title="mrjob_2players.py"
 from mrjob.job import MRJob
@@ -183,5 +183,5 @@ if __name__ == "__main__":
 ```
 
 ``` sh
-python3 mrjob_2players.py tennis_wta-master/wta_matches_* --player1 "Serena Williams" --player2 "Venus Williams"
+python mrjob_2players.py tennis_wta-master/wta_matches_* --player1 "Serena Williams" --player2 "Venus Williams"
 ```
