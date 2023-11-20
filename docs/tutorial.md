@@ -18,7 +18,7 @@ The dataset contains `.csv files` with WTA matches from 1968 until 2023.
 
 
 
-## Requirement
+## Requirements
 
 - python3
 - mrjob ```pip install mrjob```

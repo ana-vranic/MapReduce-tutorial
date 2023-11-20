@@ -12,7 +12,7 @@ In the first example, we will implement word count.
 The mapper is defined as following: 
 
 ```py title="map.py"
-!/usr/bin/env python3
+#!/usr/bin/env python3
 import sys
 import re
 
