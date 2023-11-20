@@ -290,6 +290,25 @@
   
 
     
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Used Datasets and packages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -359,7 +378,7 @@
 
 
 <h1 id="mrjob">mrjob</h1>
-<p>mrjob is a Python MapReduce library that wraps Hadoop streaming and allows us to write the MapReduce programs in a more Pythonic manner. With mrjob, it is possible to write multistep jobs. mrjob programs can be tested locally, run on the Hadoop cluster, and run in the Amazon cloud using Amazon Elastic MapReduce (EMR).</p>
+<p>mrjob is a Python MapReduce library that wraps Hadoop streaming and allows us to write the MapReduce programs in a more Pythonic manner. With mrjob, it is possible to write multistep jobs. Programs can be tested locally, run on the Hadoop cluster, and run in the Amazon cloud using Amazon Elastic MapReduce (EMR).</p>
 <ul>
 <li>instalation <code>$ pip install mrjob</code></li>
 </ul>
@@ -375,14 +394,14 @@
 <p>the reducer() defines the reducer for the MapReduce job. It takes a key and an iterator of values as arguments and yields tuples of (outup_key, output_value)</p>
 </li>
 <li>
-<p>The final component is, which enables the execution of mrjob. </p>
+<p>The final component enables the execution of mrjob. </p>
 </li>
 </ul>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">MRClass</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </span></code></pre></div>
-<h3 id="word-count-example-with-mrjob">Word count example with mrjob</h3>
+<h2 id="word-count-example-with-mrjob">Word count example with mrjob</h2>
 <p>We will perform a word count on Moby Dick book downloaded from project Gutenberg
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>wget<span class="w"> </span><span class="s2">&quot;https://gutenberg.org/cache/epub/2701/pg2701.txt&quot;</span>
 </span></code></pre></div></p>
@@ -411,7 +430,7 @@
 <p>We can execute the mrjob locally:  <code>$ python mrjob.py input.txt</code>. The mrjob writes output to stout. To save results to file we can run  <code>$ python mrjob.py input.txt &gt; out.txt</code>
 We can also pass the multiple files <code>$ python mrjob.py input.txt input2.txt input3.txt</code>. </p>
 <p>Finally, with the <code>-runner/-r</code> option, we can define how the job executes. If the job executes in the Hadoop cluster  <code>$ python mrjob.py -r hadoop input.txt</code> If we run it on the EMR cluster  <code>$ python mrjob.py -r emr s3://input-bucket/input.txt</code>.</p>
-<h3 id="chaining-map-reduce">Chaining map-reduce</h3>
+<h2 id="chaining-map-reduce">Chaining map-reduce</h2>
 <p>With mrjob, we can easily chain several map-reduce functions. For example, if we need to calculate the word with maximum frequency in the dataset. To do that, we need to override the steps() method. The code will have a mapper and reducer, the same as in the previous task. Then, the second mapper uses the reducer's output, which maps all (word, count) pairs to the same key, None. The shuffle step of map-reduce will collect them all into one list corresponding to the key None. Then reducer_post will sort the list of (word, word_count) pairs by word_count and yield the word with maximum frequency. </p>
 <div class="language-py highlight"><span class="filename">mrjob_wf.py</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">mrjob.job</span> <span class="kn">import</span> <span class="n">MRJob</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">mrjob.step</span> <span class="kn">import</span> <span class="n">MRStep</span>
@@ -453,8 +472,8 @@ We can also pass the multiple files <code>$ python mrjob.py input.txt input2.txt
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>$<span class="w"> </span>cat<span class="w"> </span><span class="s1">&#39;max_freq_word.txt&#39;</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s2">&quot;the&quot;</span><span class="w"> </span><span class="m">14620</span>
 </span></code></pre></div>
-<h3 id="passing-arguments-to-mrjob">Passing arguments to mrjob</h3>
-<p>Getting Williams sisters rivaly with MRJob. Here we will select matches when 'Serena Williams' and 'Venus Williams' played against eachother, and calculate how many times each sister won depending on the surface. </p>
+<h2 id="passing-arguments-to-mrjob">Passing arguments to mrjob</h2>
+<p>In this example we will preprocess tennis dataset in order to check Williams sisters rivaly with MRJob. Here we will select matches when 'Serena Williams' and 'Venus Williams' played against eachother, and calculate how many times each sister won depending on the surface. </p>
 <p><div class="language-py highlight"><span class="filename">mrjob_williams.py</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">mrjob.job</span> <span class="kn">import</span> <span class="n">MRJob</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
@@ -482,7 +501,7 @@ We can also pass the multiple files <code>$ python mrjob.py input.txt input2.txt
 </span></code></pre></div>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python<span class="w"> </span>mrjob_wiliams.py<span class="w"> </span>tennis_wta-master/wta_matches_*
 </span></code></pre></div></p>
-<p>Instead of overcoding the script with 'Serena Williams' and Venus Williams we can pass arguments to mrjob using passargs option.  </p>
+<p>Instead of overcoding the script with 'Serena Williams' and Venus Williams we can pass arguments to mrjob using <code>add_passthru_arg</code> option, and we will have to define new function <code>configure_args()</code> which loads passed arguments.   </p>
 <div class="language-py highlight"><span class="filename">mrjob_2players.py</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">mrjob.job</span> <span class="kn">import</span> <span class="n">MRJob</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
@@ -514,7 +533,7 @@ We can also pass the multiple files <code>$ python mrjob.py input.txt input2.txt
 </span><span id="__span-8-29"><a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 </span><span id="__span-8-30"><a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>    <span class="n">Williams</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </span></code></pre></div>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python3<span class="w"> </span>mrjob_2players.py<span class="w"> </span>tennis_wta-master/wta_matches_*<span class="w"> </span>--player1<span class="w"> </span><span class="s2">&quot;Serena Williams&quot;</span><span class="w"> </span>--player2<span class="w"> </span><span class="s2">&quot;Venus Williams&quot;</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python<span class="w"> </span>mrjob_2players.py<span class="w"> </span>tennis_wta-master/wta_matches_*<span class="w"> </span>--player1<span class="w"> </span><span class="s2">&quot;Serena Williams&quot;</span><span class="w"> </span>--player2<span class="w"> </span><span class="s2">&quot;Venus Williams&quot;</span>
 </span></code></pre></div>
 
 

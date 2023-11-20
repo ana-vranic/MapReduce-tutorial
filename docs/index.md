@@ -1,4 +1,4 @@
-# Introduction
+# Big Data analysis with Map-Reduce
 
 In Data Science, we often deal with big amounts of data. In those cases, many standard approaches won't work as expected, and to process big data, we need to apply a different technique called MapReduce. The main problem when dealing with big data is that the data size is so large that filesystem access times become a dominant factor in the execution time. Because of that, it is not efficient to process big data on a standard MPI cluster machines. With distributed computing solutions  like Hadoop and Spark clusters, which rely on the MapReduce approach, big volumes of data are processed and created by diving work into independent tasks, performing the job in parallel. For the first time, the MapReduce approach was formalized by Google, in the paper [MapReduce: Simplified Data Processing on Large Clusters](https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf) when they encountered a problem in indexing all pages on the WWW. 
 

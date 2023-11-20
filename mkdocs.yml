@@ -48,8 +48,9 @@ plugins:
   - with-pdf: 
         custom_template_path: custom_pdf
         author: Ana Vranic <br/>   Scientific Computing Laboratory, Institute of Physics Belgrade, Serbia, <br/>  Social Physics and Complexity Laboratory, LIP, Portugal
+        cover_title: Big Data analysis with Map-Reduce
         
-        cover_subtitle: DSC 2023, Belgrade 
+        cover_subtitle: DSC 2023, November, Belgrade 
         #render_js: true
         #headless_chrome_path: /snap/bin/chromium
 

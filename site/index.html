@@ -197,18 +197,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#word-count" class="md-nav__link">
+  <a href="#word-count-in-python" class="md-nav__link">
     <span class="md-ellipsis">
-      Word Count
+      Word Count in python
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-outline" class="md-nav__link">
+  <a href="#map-reduce" class="md-nav__link">
     <span class="md-ellipsis">
-      The outline
+      Map-Reduce
     </span>
   </a>
   
@@ -279,6 +279,25 @@
   
 
     
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Used Datasets and packages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -306,18 +325,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#word-count" class="md-nav__link">
+  <a href="#word-count-in-python" class="md-nav__link">
     <span class="md-ellipsis">
-      Word Count
+      Word Count in python
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-outline" class="md-nav__link">
+  <a href="#map-reduce" class="md-nav__link">
     <span class="md-ellipsis">
-      The outline
+      Map-Reduce
     </span>
   </a>
   
@@ -346,68 +365,66 @@
 <ul>
 <li>map() applies the function to each element in the sequence and returns the resulting sequence. map() also returns the memory address of the returned map generator object and has to be called with a list() or through the loop. </li>
 </ul>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&gt;&gt; ls = list(range(10))
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>&gt;&gt; list(map(lambda x: x**2, ls))
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>[1, 1, 4, 9, 16, 25, 36]
+<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">ls</span><span class="p">))</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>  [1, 1, 4, 9, 16, 25, 36]
 </span></code></pre></div>
 <ul>
 <li>reduce() function returns a single value. It applies the function to the sequence elements from left to right. </li>
 </ul>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>from functools import reduce
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>&gt;&gt;&gt; ls = list(range(1, 10, 2))
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>[1, 3, 5, 7, 9]
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>&gt;&gt;&gt; reduce(lambda x, y: x*y, ls) #(1*3*5*7*9)
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>945
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>from functools import reduce
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ls = list(range(1, 10, 2))
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>reduce(lambda x, y: x*y, ls) #(1*3*5*7*9)
 </span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>  945
+</span></code></pre></div></p>
 </div>
-<h2 id="word-count">Word Count</h2>
-<p>Counting the number of words in the documents is the simplest example when learning the MapReduce technique. In this tutorial, we will work on the <a href="https://nyu-cds.github.io/python-bigdata/files/pg2701.txt">Moby Dick book</a>. In python, we can use the following code:</p>
-<p><div class="language-py highlight"><span class="filename">word_count.py</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">re</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">WORD_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[\w]+&quot;</span><span class="p">)</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># remove any non-words and split lines into separate words</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># finally, convert all words to lowercase</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">def</span> <span class="nf">splitter</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">line</span> <span class="o">=</span> <span class="n">WORD_REGEX</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">sums</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="k">try</span><span class="p">:</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">in_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;pg2701.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">in_file</span><span class="p">:</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">splitter</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>            <span class="n">sums</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">sums</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">in_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error performing file operation&quot;</span><span class="p">)</span>
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="k">else</span><span class="p">:</span>
-</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="n">M</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sums</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">sums</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max: </span><span class="si">%s</span><span class="s2"> = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">sums</span><span class="p">[</span><span class="n">M</span><span class="p">]))</span>
+<h2 id="word-count-in-python">Word Count in python</h2>
+<p>Counting the number of words in the document is the simplest example when learning the MapReduce technique. In this tutorial, we will work on the <a href="https://nyu-cds.github.io/python-bigdata/files/pg2701.txt">Moby Dick book</a>. In python, we can use the following code:</p>
+<p><div class="language-py highlight"><span class="filename">word_count.py</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">re</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">WORD_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[\w]+&quot;</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># remove any non-words and split lines into separate words</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># finally, convert all words to lowercase</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span> <span class="nf">splitter</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">line</span> <span class="o">=</span> <span class="n">WORD_REGEX</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">sums</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="n">in_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;pg2701.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">in_file</span><span class="p">:</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">splitter</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>            <span class="n">sums</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">sums</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">in_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error performing file operation&quot;</span><span class="p">)</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>    <span class="n">M</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sums</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">sums</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max: </span><span class="si">%s</span><span class="s2"> = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">sums</span><span class="p">[</span><span class="n">M</span><span class="p">]))</span>
 </span></code></pre></div>
 Ater running the program we will get:</p>
 <p><code>max: the = 14620</code></p>
 <p>A program written like this runs only on one processor, and we expect that the time necessary to process the whole text is proportional to the size of the text. Also, as the size of the dictionary grows, the performance degrades. When the size of the dictionary reaches the size of RAM or even swap space, the program will be stopped.  </p>
-<p>In the map-reduce approach, we can avoid memory issues we may encounter. With a larger dataset, where we can still use our local computers, we can use modified versions of map-reduce functions. When data becomes big, we need to process and store data in distributed frameworks like Hadoop Spark or online computing services like AWS or Azure, where we can use the same principles and patterns we will learn in this tutorial. </p>
+<p>In the map-reduce approach, we can avoid memory issues we may encounter.  Those aproaches are scalable, and can be tested on the smaller datasets on local machine. When data becomes big, we'll need to process and store data in distributed frameworks like Hadoop or  Spark or online computing services like AWS or Azure, where we can use the same principles and patterns we will learn in this tutorial. </p>
+<h2 id="map-reduce">Map-Reduce</h2>
 <p>MapReduce consists of 3 steps:</p>
 <ul>
 <li>Map step which produces the intermediate results</li>
 <li>Shuffle step, which groups intermediate results with the same output key</li>
 <li>Reducing step that processes groups of intermediate results with the same key</li>
 </ul>
+<figure>
 <p><img alt="Image title" src="mrwc.png" width="500" /></p>
+<figcaption> Figure credits:  <a href="https://nyu-cds.github.io/python-bigdata/02-mapreduce/">New York University</a> </figcaption>
+</figure>
 <p>This approach works on data sets that consist of data records. The idea is to define the calculation in terms of two steps - a map step and a reduce step. The map operation is applied to every data record in the set and returns a list of key-value pairs. Those pairs are then collected, sorted by key, and passed into the reduce operation, which takes a key and a list of values associated with that key and then computes the final result for that key, returning it as a key-value pair.</p>
-<h2 id="the-outline">The outline</h2>
-<p>To explore MapReduce further, this tutorial will cover MapReduce paradigm usage in different frameworks:</p>
-<ul>
-<li>Hadoop cluster streaming for python</li>
-<li>Python mrjob library</li>
-<li>Python library pyspark for pythonic usage of Spark cluster</li>
-</ul>
 
 
 

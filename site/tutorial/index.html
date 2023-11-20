@@ -9,6 +9,8 @@
       
       
       
+        <link rel="prev" href="../Spark/">
+      
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -16,7 +18,7 @@
     
     
       
-        <title>Tutorial - Map-Reduce tutorial</title>
+        <title>Used Datasets and packages - Map-Reduce tutorial</title>
       
     
     
@@ -97,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tutorial
+              Used Datasets and packages
             
           </span>
         </div>
@@ -219,6 +221,88 @@
   
 
     
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Used Datasets and packages
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Used Datasets and packages
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Datasets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requirement
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#literature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Literature
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -285,7 +369,7 @@
                   
 
 
-  <h1>Tutorial</h1>
+  <h1>Used Datasets and packages</h1>
 
 <h2 id="datasets">Datasets</h2>
 <ul>
@@ -299,7 +383,10 @@
 <p><div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>wget<span class="w"> </span><span class="s2">&quot;https://github.com/JeffSackmann/tennis_wta/archive/refs/heads/master.zip&quot;</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>unzip<span class="w"> </span>master.zip
 </span></code></pre></div>
-The dataset contains <code>.csv files</code> with wta_matches from 1968 until 2023. </p>
+The dataset contains <code>.csv files</code> with WTA matches from 1968 until 2023. </p>
+<ul>
+<li>Iris Flowers Dataset can be downloaded from many sources, in this tutorial I used one from <a href="https://www.kaggle.com/datasets/himanshunakrani/iris-dataset">Kaggle</a></li>
+</ul>
 <h2 id="requirement">Requirement</h2>
 <ul>
 <li>python3</li>
@@ -307,13 +394,25 @@ The dataset contains <code>.csv files</code> with wta_matches from 1968 until 20
 <li>pyspark <code>pip install pyspark</code> To use pyspark you need previosly installed java. </li>
 <li>networkx <code>pip install networkx</code>.</li>
 <li>matplotlib <code>pip install matplotlib</code></li>
+<li>pandas <code>pip install pandas</code></li>
 </ul>
 <h2 id="literature">Literature</h2>
 <ul>
-<li>PageRank paper</li>
-<li>Map Reduce paper</li>
-<li>Map reduce book </li>
-<li>Map reduce book</li>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">MapReduce: Simplified Data Processing on Large Clusters</a></li>
+<li>
+<p>Page Rank paper, <a href="https://www.cis.upenn.edu/~mkearns/teaching/NetworkedLife/pagerank.pdf">The PageRank Citation Ranking: Bringig Order to the Web</a></p>
+</li>
+<li>
+<p>Wolohan, J. (2020). Mastering Large Datasets with Python: Parallelize and Distribute Your Python Code. United States: Manning.</p>
+</li>
+<li>Radtka, Z., &amp; Miner, D. (2015). Hadoop with Python. O'Reilly Media.</li>
+<li>Tutorial <a href="https://nyu-cds.github.io/python-bigdata/">BigData with PySpark</a> by New York University </li>
+<li>
+<p>CornellEdu <a href="https://people.orie.cornell.edu/vc333/orie5270/lectures/01/">BigData Technologies</a> course</p>
+</li>
+<li>
+<p><a href="https://www.scl.rs/PARADOX_User_Guide/hadoop-user-guide.html">Paradox Hadoop user guide</a></p>
+</li>
 </ul>
 
 
